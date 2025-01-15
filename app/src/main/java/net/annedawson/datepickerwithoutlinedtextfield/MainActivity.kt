@@ -33,7 +33,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-
+import java.util.TimeZone
 
 
 class MainActivity : ComponentActivity() {
@@ -104,7 +104,8 @@ fun DatePickerWithOutlinedTextField() {
                     Button(onClick = {
                         datePickerState.selectedDateMillis?.let {
                             selectedDateMillis = it
-                            dateText = convertMillisToDate(it)
+                            selectedDateMillis = epochToLocalTimeZoneConvertor(selectedDateMillis)
+                            dateText = convertMillisToDate(selectedDateMillis)
                         }
                         showDatePicker = false
                     }) {
@@ -133,7 +134,21 @@ fun convertDateToMillis(dateString: String): Long {
     return formatter.parse(dateString)?.time ?: throw ParseException("Invalid date format", 0)
 }
 
-
+fun epochToLocalTimeZoneConvertor(epoch: Long): Long {
+    val epochCalendar = Calendar.getInstance()
+    epochCalendar.timeZone = TimeZone.getTimeZone("UTC")
+    epochCalendar.timeInMillis = epoch
+    val converterCalendar = Calendar.getInstance()
+    converterCalendar.set(
+        epochCalendar.get(Calendar.YEAR),
+        epochCalendar.get(Calendar.MONTH),
+        epochCalendar.get(Calendar.DATE),
+        epochCalendar.get(Calendar.HOUR_OF_DAY),
+        epochCalendar.get(Calendar.MINUTE),
+    )
+    converterCalendar.timeZone = TimeZone.getDefault()
+    return converterCalendar.timeInMillis
+}
 
 @Preview(showBackground = true)
 @Composable
