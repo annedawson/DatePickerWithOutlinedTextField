@@ -70,11 +70,19 @@ fun DateApp(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun DatePickerWithOutlinedTextField() {
     var selectedDateMillis by remember { mutableLongStateOf(System.currentTimeMillis()) }
+    // try set to OL
+    // try use zoneconvertedfunctrion o n System.currentTimeMillis()
+    // **************************************************************
+
+
     var showDatePicker by remember { mutableStateOf(false) }
     var dateText by remember { mutableStateOf(convertMillisToDate(selectedDateMillis)) }
     var isError by remember { mutableStateOf(false) }
 
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = selectedDateMillis)
+    //val datePickerState = rememberDatePickerState(initialSelectedDateMillis = selectedDateMillis)
+    // The line below fixed the error where the date picker shows the correct current date,
+    // but also highlighted the day before the current date (in some timezones).
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = null)
 
     Column(modifier = Modifier.padding(16.dp)) {
         OutlinedTextField(
